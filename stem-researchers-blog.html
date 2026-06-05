@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FIELD NOTES — STEM Research Profiles</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bark:    #1a1008;
+      --moss:    #2b3520;
+      --fern:    #3d4f2c;
+      --canopy:  #4a6337;
+      --sage:    #7a9e68;
+      --lichen:  #a8bf94;
+      --dew:     #d4e6c3;
+      --parchment: #f0ebe2;
+      --amber:   #e8571a;
+      --cream:   #fdf0e8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bark);
+      color: var(--parchment);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.2rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(14px);
+      background: rgba(28,26,20,0.85);
+      border-bottom: 1px solid rgba(168,191,148,0.15);
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--parchment);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+    }
+    .nav-logo span { color: #f97316; }
+
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(242,237,224,0.55);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--lichen); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 90% 70% at 50% 110%, rgba(74,99,55,0.55) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 15% 25%, rgba(43,53,32,0.8) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 85% 15%, rgba(232,87,26,0.1) 0%, transparent 60%),
+        #100b05;
+    }
+
+    .hero-texture {
+      position: absolute;
+      inset: 0;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23a8bf94' stroke-width='0.5'%3E%3Cline x1='0' y1='30' x2='60' y2='30'/%3E%3Cline x1='30' y1='0' x2='30' y2='60'/%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      pointer-events: none;
+      animation: drift linear infinite;
+    }
+    .orb1 { width: 500px; height: 500px; background: rgba(61,79,44,0.55); top: -180px; left: -120px; animation-duration: 35s; }
+    .orb2 { width: 350px; height: 350px; background: rgba(74,99,55,0.4); bottom: -80px; right: -80px; animation-duration: 26s; animation-direction: reverse; }
+    .orb3 { width: 220px; height: 220px; background: rgba(122,158,104,0.25); top: 35%; left: 55%; animation-duration: 20s; }
+
+    @keyframes drift {
+      0%   { transform: translate(0,0) scale(1); }
+      33%  { transform: translate(25px,-35px) scale(1.04); }
+      66%  { transform: translate(-18px,18px) scale(0.97); }
+      100% { transform: translate(0,0) scale(1); }
+    }
+
+    .hero-content { position: relative; z-index: 2; padding: 2rem; max-width: 900px; }
+
+    .site-eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.35em;
+      color: var(--lichen);
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(4rem, 12vw, 10rem);
+      font-weight: 900;
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s forwards;
+      color: var(--cream);
+    }
+    .hero-title em { font-style: italic; color: var(--amber); }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      font-weight: 300;
+      color: rgba(212,230,195,0.7);
+      max-width: 560px;
+      margin: 0 auto 3rem;
+      line-height: 1.75;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.6s forwards;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.8s forwards;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.85rem 2rem;
+      border-radius: 3px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: all 0.25s;
+    }
+    .btn-primary { background: #c2410c; color: var(--cream); }
+    .btn-primary:hover { background: #ea580c; transform: translateY(-2px); }
+    .btn-outline { background: transparent; color: var(--parchment); border: 1px solid rgba(212,230,195,0.3); }
+    .btn-outline:hover { border-color: var(--amber); color: var(--amber); transform: translateY(-2px); }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      color: rgba(168,191,148,0.5);
+      animation: fadeUp 1s 1.5s both;
+      z-index: 2;
+    }
+    .scroll-line {
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, var(--sage), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+
+    /* ── SEARCH SECTION ── */
+    .search-section {
+      background: var(--moss);
+      padding: 3.5rem 3rem;
+      border-bottom: 1px solid rgba(168,191,148,0.12);
+    }
+
+    .search-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .search-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--cream);
+    }
+    .search-title em { font-style: italic; color: var(--amber); }
+
+    .search-subtitle {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--lichen);
+      margin-bottom: 0.4rem;
+    }
+
+    .search-inputs-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 0.75rem;
+      align-items: end;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .input-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--lichen);
+    }
+
+    .search-input-wrap { position: relative; }
+
+    .search-input, .institution-select {
+      width: 100%;
+      background: rgba(14,13,9,0.5);
+      border: 1px solid rgba(168,191,148,0.25);
+      color: var(--parchment);
+      padding: 0.85rem 1rem 0.85rem 2.8rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      border-radius: 3px;
+      transition: border-color 0.2s, background 0.2s;
+      -webkit-appearance: none;
+    }
+    .search-input:focus, .institution-select:focus {
+      border-color: var(--sage);
+      background: rgba(14,13,9,0.7);
+    }
+    .search-input::placeholder { color: rgba(212,230,195,0.3); }
+    .institution-select option { background: #2b3520; color: var(--parchment); }
+
+    .input-icon {
+      position: absolute;
+      left: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--sage);
+      font-size: 1rem;
+      pointer-events: none;
+    }
+
+    .search-btn {
+      padding: 0.85rem 1.5rem;
+      background: transparent;
+      color: var(--lichen);
+      border: 1px solid rgba(168,191,148,0.3);
+      border-radius: 3px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .search-btn:hover { background: rgba(168,191,148,0.1); border-color: var(--lichen); }
+
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(168,191,148,0.5);
+      white-space: nowrap;
+    }
+
+    .filter-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+    .chip {
+      padding: 0.4rem 1rem;
+      border: 1px solid rgba(168,191,148,0.22);
+      border-radius: 999px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(212,230,195,0.45);
+      cursor: pointer;
+      transition: all 0.2s;
+      background: transparent;
+    }
+    .chip:hover { border-color: var(--lichen); color: var(--lichen); }
+    .chip.active { background: var(--fern); border-color: var(--sage); color: var(--dew); }
+
+    .results-count {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(168,191,148,0.45);
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main-content { max-width: 1200px; margin: 0 auto; padding: 5rem 3rem; }
+
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .section-eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.3em;
+      color: var(--lichen);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--cream);
+    }
+    .section-title em { font-style: italic; color: var(--amber); }
+
+    .see-all {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--lichen);
+      text-decoration: none;
+      border-bottom: 1px solid var(--lichen);
+      padding-bottom: 2px;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+    .see-all:hover { color: var(--sage); border-color: var(--sage); }
+
+    /* ── FEATURED PROFILE ── */
+    .featured-profile {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      border: 1px solid rgba(168,191,148,0.15);
+      overflow: hidden;
+      margin-bottom: 4rem;
+      background: var(--moss);
+      transition: transform 0.3s;
+    }
+    .featured-profile:hover { transform: translateY(-3px); }
+
+    .featured-img {
+      position: relative;
+      min-height: 400px;
+      background: linear-gradient(160deg, #1a2212 0%, #2b3a1c 50%, #131a0c 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .featured-img::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(122,158,104,0.18) 0%, transparent 70%);
+    }
+
+    .researcher-avatar {
+      width: 150px; height: 150px;
+      border-radius: 50%;
+      border: 2px solid rgba(232,87,26,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--amber);
+      background: rgba(232,87,26,0.1);
+      position: relative;
+      z-index: 2;
+    }
+
+    .featured-body {
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .profile-field-tag {
+      display: inline-block;
+      padding: 0.28rem 0.8rem;
+      background: rgba(74,99,55,0.4);
+      border: 1px solid rgba(122,158,104,0.35);
+      color: var(--lichen);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      border-radius: 2px;
+      width: fit-content;
+    }
+
+    .profile-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 0.4rem;
+      color: var(--cream);
+    }
+
+    .profile-title-line {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      color: rgba(212,230,195,0.45);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .profile-excerpt {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: rgba(212,230,195,0.72);
+      margin-bottom: 2rem;
+    }
+
+    .profile-meta { display: flex; gap: 2rem; flex-wrap: wrap; }
+    .meta-item { display: flex; flex-direction: column; gap: 0.2rem; }
+    .meta-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.52rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(168,191,148,0.35);
+    }
+    .meta-value { font-size: 0.88rem; color: rgba(212,230,195,0.75); font-weight: 500; }
+
+    /* ── CARDS GRID ── */
+    .profiles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1px;
+      background: rgba(168,191,148,0.08);
+      border: 1px solid rgba(168,191,148,0.08);
+    }
+
+    .no-results {
+      grid-column: 1 / -1;
+      padding: 4rem 2rem;
+      text-align: center;
+      display: none;
+    }
+    .no-results-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-style: italic;
+      color: rgba(168,191,148,0.4);
+    }
+    .no-results-sub {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(168,191,148,0.25);
+      margin-top: 0.5rem;
+    }
+
+    .profile-card {
+      background: var(--moss);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+    .profile-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--sage);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s;
+    }
+    .profile-card:hover { background: rgba(74,99,55,0.5); }
+    .profile-card:hover::after { transform: scaleX(1); }
+
+    .card-avatar {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(232,87,26,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--amber);
+      background: rgba(232,87,26,0.09);
+      flex-shrink: 0;
+    }
+
+    .card-top { display: flex; align-items: center; gap: 1rem; }
+    .card-name-block { display: flex; flex-direction: column; gap: 0.2rem; }
+    .card-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--cream);
+    }
+    .card-title-small {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(168,191,148,0.45);
+    }
+
+    .card-institution {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--lichen);
+      background: rgba(74,99,55,0.35);
+      border: 1px solid rgba(122,158,104,0.2);
+      padding: 0.22rem 0.65rem;
+      border-radius: 2px;
+      width: fit-content;
+    }
+
+    .card-excerpt {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: rgba(212,230,195,0.6);
+      flex: 1;
+    }
+
+    .card-footer {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .field-tag {
+      padding: 0.22rem 0.65rem;
+      background: rgba(61,79,44,0.5);
+      border: 1px solid rgba(122,158,104,0.25);
+      color: var(--lichen);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.56rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 2px;
+    }
+
+    .read-link {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(168,191,148,0.35);
+      transition: color 0.2s;
+    }
+    .profile-card:hover .read-link { color: var(--lichen); }
+
+    /* ── QUOTE BREAK ── */
+    .quote-break {
+      background: #7c2d12;
+      padding: 5rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid rgba(168,191,148,0.1);
+      border-bottom: 1px solid rgba(168,191,148,0.1);
+    }
+    .quote-break::before {
+      content: '"';
+      position: absolute;
+      top: -3rem; left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Playfair Display', serif;
+      font-size: 18rem;
+      color: rgba(168,191,148,0.06);
+      line-height: 1;
+      pointer-events: none;
+    }
+    .quote-text {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 3.5vw, 2.6rem);
+      font-style: italic;
+      max-width: 760px;
+      margin: 0 auto 1.5rem;
+      line-height: 1.45;
+      color: var(--cream);
+      position: relative;
+      z-index: 1;
+    }
+    .quote-attr {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(212,230,195,0.5);
+    }
+
+    /* ── BLOG POSTS ── */
+    .blog-wrapper {
+      background: #111009;
+      border-top: 1px solid rgba(168,191,148,0.1);
+    }
+
+    .posts-list { display: flex; flex-direction: column; }
+
+    .post-item {
+      display: grid;
+      grid-template-columns: 70px 1fr auto;
+      align-items: center;
+      gap: 2rem;
+      padding: 2rem 0;
+      border-bottom: 1px solid rgba(168,191,148,0.07);
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+    .post-item:hover .post-title { color: var(--lichen); }
+    .post-item:hover .post-arrow { opacity: 1; transform: translateX(4px); }
+
+    .post-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: rgba(122,158,104,0.18);
+      font-style: italic;
+    }
+
+    .post-body { display: flex; flex-direction: column; gap: 0.35rem; }
+    .post-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .post-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.56rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #fb923c;
+    }
+    .post-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.05rem, 2vw, 1.45rem);
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--cream);
+      transition: color 0.2s;
+    }
+    .post-meta {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(168,191,148,0.3);
+    }
+    .post-arrow {
+      font-size: 1.1rem;
+      color: var(--sage);
+      opacity: 0;
+      transition: all 0.2s;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #0a0908;
+      border-top: 1px solid rgba(168,191,148,0.1);
+      padding: 4rem 3rem 2rem;
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 4rem;
+      margin-bottom: 3rem;
+    }
+    .footer-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 900;
+      margin-bottom: 1rem;
+      color: var(--cream);
+    }
+    .footer-brand span { color: #f97316; }
+    .footer-desc {
+      font-size: 0.88rem;
+      line-height: 1.75;
+      color: rgba(168,191,148,0.4);
+      max-width: 300px;
+    }
+    .footer-col-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--lichen);
+      margin-bottom: 1.2rem;
+    }
+    .footer-links { display: flex; flex-direction: column; gap: 0.7rem; list-style: none; }
+    .footer-links a {
+      font-size: 0.88rem;
+      color: rgba(168,191,148,0.4);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--parchment); }
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(168,191,148,0.06);
+      display: flex;
+      justify-content: space-between;
+    }
+    .footer-copy {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(168,191,148,0.2);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .main-content { padding: 3rem 1.5rem; }
+      .featured-profile { grid-template-columns: 1fr; }
+      .featured-img { min-height: 260px; }
+      .post-item { grid-template-columns: 45px 1fr; }
+      .post-arrow { display: none; }
+      .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+      .search-section { padding: 2rem 1.5rem; }
+      .search-inputs-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-logo" href="#">FIELD <span>NOTES</span></a>
+    <ul class="nav-links">
+      <li><a href="#profiles">Profiles</a></li>
+      <li><a href="#blog">Articles</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#" class="btn btn-primary" style="padding:0.5rem 1.2rem;">Submit a Researcher</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-texture"></div>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+    <div class="hero-content">
+      <p class="site-eyebrow">Dispatches from the frontier of science</p>
+      <h1 class="hero-title">Field<br><em>Notes.</em></h1>
+      <p class="hero-sub">Portraits of the researchers reshaping our world — written for the curious minds who will follow in their footsteps.</p>
+      <div class="hero-cta">
+        <a href="#profiles" class="btn btn-primary">Explore Profiles</a>
+        <a href="#blog" class="btn btn-outline">Read Articles</a>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-section" id="profiles">
+    <div class="search-inner">
+      <div>
+        <p class="search-subtitle">Find a researcher</p>
+        <h2 class="search-title">Search by <em>name, field, or institution</em></h2>
+      </div>
+
+      <div class="search-inputs-row">
+        <div class="input-group">
+          <span class="input-label">Name or keyword</span>
+          <div class="search-input-wrap">
+            <span class="input-icon">⌕</span>
+            <input class="search-input" type="text" placeholder="e.g. Dr. Tanaka, CRISPR, dark matter…" id="searchInput" oninput="filterContent()" />
+          </div>
+        </div>
+
+        <div class="input-group">
+          <span class="input-label">Institution</span>
+          <div class="search-input-wrap">
+            <span class="input-icon" style="font-size:0.85rem;">🏛</span>
+            <select class="institution-select" id="institutionSelect" onchange="filterContent()" style="padding-left:2.8rem;">
+              <option value="">All Institutions</option>
+              <option value="mit">MIT</option>
+              <option value="stanford">Stanford University</option>
+              <option value="caltech">Caltech</option>
+              <option value="ucsf">UCSF</option>
+              <option value="cmu">Carnegie Mellon</option>
+              <option value="whoi">WHOI</option>
+              <option value="deepmind">DeepMind</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <span class="input-label">&nbsp;</span>
+          <button class="search-btn" onclick="clearFilters()">↺ Clear filters</button>
+        </div>
+      </div>
+
+      <div class="filter-row">
+        <span class="filter-label">Field:</span>
+        <div class="filter-chips">
+          <button class="chip active" onclick="setFilter('all', this)">All</button>
+          <button class="chip" onclick="setFilter('biology', this)">Biology</button>
+          <button class="chip" onclick="setFilter('astrophysics', this)">Astrophysics</button>
+          <button class="chip" onclick="setFilter('climate', this)">Climate Science</button>
+          <button class="chip" onclick="setFilter('neuroscience', this)">Neuroscience</button>
+          <button class="chip" onclick="setFilter('materials', this)">Materials Science</button>
+          <button class="chip" onclick="setFilter('computing', this)">Computing</button>
+          <button class="chip" onclick="setFilter('oceanography', this)">Oceanography</button>
+        </div>
+      </div>
+
+      <p class="results-count" id="resultsCount">Showing 6 researchers</p>
+    </div>
+  </div>
+
+  <!-- PROFILES -->
+  <div class="main-content">
+    <div class="section-header">
+      <div>
+        <p class="section-eyebrow">Researcher spotlight</p>
+        <h2 class="section-title">This <em>Week's</em> Profile</h2>
+      </div>
+      <a href="#" class="see-all">All Profiles →</a>
+    </div>
+
+    <div class="featured-profile">
+      <div class="featured-img">
+        <div class="researcher-avatar">A</div>
+      </div>
+      <div class="featured-body">
+        <span class="profile-field-tag">Climate Science</span>
+        <h3 class="profile-name">Dr. Amara Osei-Bonsu</h3>
+        <p class="profile-title-line">Associate Professor · MIT Earth Systems Lab</p>
+        <p class="profile-excerpt">Growing up near the Volta River in Ghana, Amara watched the water levels shift year by year. Today, her lab at MIT uses satellite telemetry and machine learning to map glacial melt in real time — work that is rewriting global freshwater forecasts and placing her at the center of the most urgent conversation of our era.</p>
+        <div class="profile-meta">
+          <div class="meta-item">
+            <span class="meta-label">Institution</span>
+            <span class="meta-value">MIT</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Focus</span>
+            <span class="meta-value">Glaciology</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Published</span>
+            <span class="meta-value">Feb 20, 2026</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profiles-grid" id="profileGrid">
+
+      <a class="profile-card" data-field="neuroscience" data-institution="stanford" href="#">
+        <div class="card-top">
+          <div class="card-avatar">R</div>
+          <div class="card-name-block">
+            <span class="card-name">Dr. Rina Tanaka</span>
+            <span class="card-title-small">Postdoctoral Fellow</span>
+          </div>
+        </div>
+        <span class="card-institution">Stanford University</span>
+        <p class="card-excerpt">Mapping the brain's default mode network to understand why some memories solidify and others dissolve. Her work could transform PTSD treatment.</p>
+        <div class="card-footer">
+          <span class="field-tag">Neuroscience</span>
+          <span class="read-link">Read →</span>
+        </div>
+      </a>
+
+      <a class="profile-card" data-field="astrophysics" data-institution="caltech" href="#">
+        <div class="card-top">
+          <div class="card-avatar">M</div>
+          <div class="card-name-block">
+            <span class="card-name">Dr. Marcus Webb</span>
+            <span class="card-title-small">PhD Candidate</span>
+          </div>
+        </div>
+        <span class="card-institution">Caltech</span>
+        <p class="card-excerpt">Using gravitational lensing to peer beyond observable universe constraints. His thesis challenges our understanding of dark matter distribution.</p>
+        <div class="card-footer">
+          <span class="field-tag">Astrophysics</span>
+          <span class="read-link">Read →</span>
+        </div>
+      </a>
+
+      <a class="profile-card" data-field="biology" data-institution="ucsf" href="#">
+        <div class="card-top">
+          <div class="card-avatar">S</div>
+          <div class="card-name-block">
+            <span class="card-name">Dr. Sofia Reyes</span>
+            <span class="card-title-small">Principal Investigator</span>
+          </div>
+        </div>
+        <span class="card-institution">UCSF</span>
+        <p class="card-excerpt">Engineering CRISPR delivery mechanisms that can cross the blood-brain barrier. Her 2024 trial results stunned the field at Cold Spring Harbor.</p>
+        <div class="card-footer">
+          <span class="field-tag">Biology</span>
+          <span class="read-link">Read →</span>
+        </div>
+      </a>
+
+      <a class="profile-card" data-field="oceanography" data-institution="whoi" href="#">
+        <div class="card-top">
+          <div class="card-avatar">K</div>
+          <div class="card-name-block">
+            <span class="card-name">Dr. Kwame Asante</span>
+            <span class="card-title-small">Research Scientist</span>
+          </div>
+        </div>
+        <span class="card-institution">WHOI</span>
+        <p class="card-excerpt">Deploying autonomous underwater gliders to map deep-ocean carbon sequestration. His data fills gaps in global climate models that have persisted for decades.</p>
+        <div class="card-footer">
+          <span class="field-tag">Oceanography</span>
+          <span class="read-link">Read →</span>
+        </div>
+      </a>
+
+      <a class="profile-card" data-field="materials" data-institution="cmu" href="#">
+        <div class="card-top">
+          <div class="card-avatar">L</div>
+          <div class="card-name-block">
+            <span class="card-name">Dr. Lin Mei</span>
+            <span class="card-title-small">Associate Professor</span>
+          </div>
+        </div>
+        <span class="card-institution">Carnegie Mellon</span>
+        <p class="card-excerpt">Designing perovskite solar cell architectures that achieve 32% efficiency under laboratory conditions — a potential turning point for renewable energy economics.</p>
+        <div class="card-footer">
+          <span class="field-tag">Materials Science</span>
+          <span class="read-link">Read →</span>
+        </div>
+      </a>
+
+      <a class="profile-card" data-field="computing" data-institution="deepmind" href="#">
+        <div class="card-top">
+          <div class="card-avatar">J</div>
+          <div class="card-name-block">
+            <span class="card-name">Dr. Jonas Eriksson</span>
+            <span class="card-title-small">Research Lead</span>
+          </div>
+        </div>
+        <span class="card-institution">DeepMind</span>
+        <p class="card-excerpt">Developing interpretability tools for large neural networks — work at the intersection of philosophy of mind and computer science in the most provocative way.</p>
+        <div class="card-footer">
+          <span class="field-tag">Computing</span>
+          <span class="read-link">Read →</span>
+        </div>
+      </a>
+
+      <div class="no-results" id="noResults">
+        <p class="no-results-text">No researchers found.</p>
+        <p class="no-results-sub">Try adjusting your search or filters</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- QUOTE -->
+  <div class="quote-break">
+    <p class="quote-text">"The most exciting phrase in science is not 'Eureka!' but 'That's funny…'"</p>
+    <p class="quote-attr">— Isaac Asimov</p>
+  </div>
+
+  <!-- BLOG -->
+  <div class="blog-wrapper" id="blog">
+    <div class="main-content" style="padding-top:4rem;padding-bottom:4rem;">
+      <div class="section-header">
+        <div>
+          <p class="section-eyebrow">From the journal</p>
+          <h2 class="section-title">Latest <em>Articles</em></h2>
+        </div>
+        <a href="#" class="see-all">All Articles →</a>
+      </div>
+      <div class="posts-list">
+        <a class="post-item" href="#">
+          <span class="post-number">01</span>
+          <div class="post-body">
+            <div class="post-tags"><span class="post-tag">Neuroscience</span><span class="post-tag" style="opacity:0.3">·</span><span class="post-tag">Careers</span></div>
+            <h3 class="post-title">What It Actually Feels Like to Defend Your Dissertation</h3>
+            <p class="post-meta">Feb 25, 2026 &nbsp;·&nbsp; 6 min read</p>
+          </div>
+          <span class="post-arrow">→</span>
+        </a>
+        <a class="post-item" href="#">
+          <span class="post-number">02</span>
+          <div class="post-body">
+            <div class="post-tags"><span class="post-tag">Climate Science</span><span class="post-tag" style="opacity:0.3">·</span><span class="post-tag">Fieldwork</span></div>
+            <h3 class="post-title">Fourteen Months on a Glacier: Notes from the Ice</h3>
+            <p class="post-meta">Feb 18, 2026 &nbsp;·&nbsp; 9 min read</p>
+          </div>
+          <span class="post-arrow">→</span>
+        </a>
+        <a class="post-item" href="#">
+          <span class="post-number">03</span>
+          <div class="post-body">
+            <div class="post-tags"><span class="post-tag">Computing</span><span class="post-tag" style="opacity:0.3">·</span><span class="post-tag">Ethics</span></div>
+            <h3 class="post-title">The Researchers Who Want AI to Explain Itself</h3>
+            <p class="post-meta">Feb 11, 2026 &nbsp;·&nbsp; 11 min read</p>
+          </div>
+          <span class="post-arrow">→</span>
+        </a>
+        <a class="post-item" href="#">
+          <span class="post-number">04</span>
+          <div class="post-body">
+            <div class="post-tags"><span class="post-tag">Biology</span><span class="post-tag" style="opacity:0.3">·</span><span class="post-tag">Funding</span></div>
+            <h3 class="post-title">Grant Season: How Young Biologists Navigate the Race for Money</h3>
+            <p class="post-meta">Feb 4, 2026 &nbsp;·&nbsp; 7 min read</p>
+          </div>
+          <span class="post-arrow">→</span>
+        </a>
+        <a class="post-item" href="#">
+          <span class="post-number">05</span>
+          <div class="post-body">
+            <div class="post-tags"><span class="post-tag">Astrophysics</span><span class="post-tag" style="opacity:0.3">·</span><span class="post-tag">Profile</span></div>
+            <h3 class="post-title">Looking for Dark Matter at the Bottom of a Mine</h3>
+            <p class="post-meta">Jan 27, 2026 &nbsp;·&nbsp; 8 min read</p>
+          </div>
+          <span class="post-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <p class="footer-brand">FIELD <span>NOTES</span></p>
+        <p class="footer-desc">Long-form profiles of researchers doing remarkable work — written for students and early-career scientists who want to see what's possible.</p>
+      </div>
+      <div>
+        <p class="footer-col-title">Navigate</p>
+        <ul class="footer-links">
+          <li><a href="#">Researcher Profiles</a></li>
+          <li><a href="#">Articles</a></li>
+          <li><a href="#">By Field</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Submit a Researcher</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">By Institution</p>
+        <ul class="footer-links">
+          <li><a href="#">MIT</a></li>
+          <li><a href="#">Stanford</a></li>
+          <li><a href="#">Caltech</a></li>
+          <li><a href="#">UCSF</a></li>
+          <li><a href="#">WHOI</a></li>
+          <li><a href="#">Carnegie Mellon</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Field Notes — All rights reserved</p>
+      <p class="footer-copy">Made with curiosity</p>
+    </div>
+  </footer>
+
+  <script>
+    let activeFilter = 'all';
+
+    function setFilter(field, el) {
+      activeFilter = field;
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      filterContent();
+    }
+
+    function clearFilters() {
+      activeFilter = 'all';
+      document.getElementById('searchInput').value = '';
+      document.getElementById('institutionSelect').value = '';
+      document.querySelectorAll('.chip').forEach((c, i) => c.classList.toggle('active', i === 0));
+      filterContent();
+    }
+
+    function filterContent() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      const institution = document.getElementById('institutionSelect').value.toLowerCase();
+      const cards = document.querySelectorAll('.profile-card');
+      let visible = 0;
+
+      cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        const field = card.dataset.field || '';
+        const inst = card.dataset.institution || '';
+
+        const matchesSearch = !query || text.includes(query);
+        const matchesField = activeFilter === 'all' || field === activeFilter;
+        const matchesInstitution = !institution || inst === institution;
+
+        const show = matchesSearch && matchesField && matchesInstitution;
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+
+      document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+      document.getElementById('resultsCount').textContent = visible === 0
+        ? 'No researchers match your search'
+        : `Showing ${visible} researcher${visible !== 1 ? 's' : ''}`;
+    }
+  </script>
+
+</body>
+</html>
